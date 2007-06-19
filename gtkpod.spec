@@ -34,6 +34,7 @@ BuildRequires:	gtk2-devel ImageMagick libglade2.0-devel
 BuildRequires:	libcurl-devel
 BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
+BuildRequires:	libgnomecanvas2-devel
 BuildRequires:	flex
 %if %build_plf
 BuildRequires:	libmp4v2-devel
