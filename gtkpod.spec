@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.9
-%define cvs 20070207
+%define cvs 20070619
 %define release %mkrel 0.%cvs.1
 
 %define build_plf 0
@@ -27,9 +27,13 @@ License:	GPL
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
-BuildRequires:	libgpod-devel >= 0.4.2
+BuildRequires:	libgpod-devel >= 0.4.3
+BuildRequires:	libvorbis-devel
+BuildRequires:	libflac-devel
 BuildRequires:	gtk2-devel ImageMagick libglade2.0-devel
 BuildRequires:	libcurl-devel
+BuildRequires:	libhal-devel
+BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	flex
 %if %build_plf
 BuildRequires:	libmp4v2-devel
