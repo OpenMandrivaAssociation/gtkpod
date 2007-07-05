@@ -1,7 +1,7 @@
 %define name	gtkpod
 %define version 0.99.9
 %define cvs 20070619
-%define release %mkrel 0.%cvs.1
+%define release %mkrel 0.%cvs.2
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -17,7 +17,7 @@ Version: 	%{version}
 Release: 	%{release}
 
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{cvs}.tar.bz2
-Patch: gtkpod-0.99.4-evopath.patch
+Patch: gtkpod-20070619-evopath.patch
 Patch1: gtkpod-0.99.8-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
