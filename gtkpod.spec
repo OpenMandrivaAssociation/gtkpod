@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.10
-%define release %mkrel 2
+%define release %mkrel 3
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -26,7 +26,7 @@ License:	GPL
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
-BuildRequires:	libgpod-devel >= 0.4.3
+BuildRequires:	libgpod-devel >= 0.5.2
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	gtk2-devel libglade2.0-devel
@@ -82,8 +82,11 @@ desktop-file-install --vendor="" \
 	--add-category="X-MandrivaLinux-Multimedia-Sound" \
 	--dir $RPM_BUILD_ROOT%{_datadir}/applications $RPM_BUILD_ROOT%{_datadir}/applications/*
 
-
 %find_lang %{name}
+
+%if %_lib != lib
+perl -pi -e "s!%_prefix/lib!%_libdir!g" %buildroot%_datadir/%name/scripts/sync-evolution.sh
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
