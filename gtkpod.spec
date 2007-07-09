@@ -1,7 +1,6 @@
 %define name	gtkpod
-%define version 0.99.9
-%define cvs 20070619
-%define release %mkrel 0.%cvs.2
+%define version 0.99.10
+%define release %mkrel 1
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -16,7 +15,7 @@ Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{cvs}.tar.bz2
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.bz2
 Patch: gtkpod-20070619-evopath.patch
 Patch1: gtkpod-0.99.8-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
@@ -30,11 +29,12 @@ BuildRequires:	libid3tag-devel
 BuildRequires:	libgpod-devel >= 0.4.3
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
-BuildRequires:	gtk2-devel ImageMagick libglade2.0-devel
+BuildRequires:	gtk2-devel libglade2.0-devel
 BuildRequires:	libcurl-devel
 BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	libgnomecanvas2-devel
+BuildRequires:	desktop-file-utils
 BuildRequires:	flex
 %if %build_plf
 BuildRequires:	libmp4v2-devel
@@ -65,12 +65,11 @@ This package is in PLF as it may violate some MP4 patents.
 %endif
 
 %prep
-%setup -q -n %name
+%setup -q
 %patch0 -p1 -b .evo
 %patch1 -p1 -b .cover
 %patch3 -p1 -b .mountpoint
 chmod 644 README ChangeLog COPYING AUTHORS
-./autogen.sh
 
 %build
 %configure2_5x
@@ -79,35 +78,10 @@ chmod 644 README ChangeLog COPYING AUTHORS
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall_std
-rm %buildroot/%_datadir/%name/pixmaps/%name.glade*
-ln -s %_datadir/gtkpod/gtkpod.glade %buildroot/%_datadir/gtkpod/pixmaps/gtkpod.glade
-ln -s %_datadir/gtkpod/gtkpod.gladep %buildroot/%_datadir/gtkpod/pixmaps/gtkpod.gladep
+desktop-file-install --vendor="" \
+	--add-category="X-MandrivaLinux-Multimedia-Sound" \
+	--dir $RPM_BUILD_ROOT%{_datadir}/applications $RPM_BUILD_ROOT%{_datadir}/applications/*
 
-#menu
-mkdir -p $RPM_BUILD_ROOT%{_menudir}
-cat << EOF > $RPM_BUILD_ROOT%{_menudir}/%{name}
-?package(%{name}): command="%{name}" icon="%{name}.png" needs="x11" title="GTKPod" longtitle="Interface to iPod" section="Multimedia/Sound" xdg="true"
-EOF
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
-cat > $RPM_BUILD_ROOT%{_datadir}/applications/mandriva-%{name}.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=GTKPod
-Comment=Interface to iPod
-Exec=%{name}
-Icon=%name
-Terminal=false
-Type=Application
-StartupNotify=true
-Categories=X-MandrivaLinux-Multimedia-Sound;Audio;Player;
-EOF
-
-
-#icons
-mkdir -p $RPM_BUILD_ROOT{%{_liconsdir},%{_miconsdir},%{_iconsdir}}
-cp pixmaps/%{name}-icon-48x48.png $RPM_BUILD_ROOT%{_liconsdir}/%{name}.png
-convert -size 32x32 pixmaps/%{name}-icon-64x64.png $RPM_BUILD_ROOT%{_iconsdir}/%{name}.png
-convert -size 16x16 pixmaps/%{name}-icon-64x64.png $RPM_BUILD_ROOT%{_miconsdir}/%{name}.png
 
 %find_lang %{name}
 
@@ -116,19 +90,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_menus
+%update_icon_cache hicolor
 		
 %postun
 %clean_menus
+%clean_icon_cache hicolor
 
 %files -f %{name}.lang
 %defattr(-,root,root)
 %doc README AUTHORS ChangeLog
 %{_bindir}/%{name}
 %{_datadir}/%{name}
-%{_datadir}/applications/mandriva-*
-%{_menudir}/%{name}
-%{_liconsdir}/%{name}.png
-%{_iconsdir}/%{name}.png
-%{_miconsdir}/%{name}.png
-
+%{_datadir}/applications/gtkpod.desktop
+%_datadir/icons/hicolor/*/apps/gtkpod.*
 
