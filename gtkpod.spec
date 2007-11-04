@@ -23,6 +23,7 @@ Patch2: gtkpod-0.99.10-mpeg4ip.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
+Patch4: gtkpod-0.99.10-desktopentry.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPL
 Group:		Communications
@@ -36,7 +37,6 @@ BuildRequires:	libcurl-devel
 BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	libgnomecanvas2-devel
-BuildRequires:	desktop-file-utils
 BuildRequires:	flex
 %if %build_plf
 BuildRequires:	libmp4v2-devel
@@ -72,6 +72,7 @@ This package is in PLF as it may violate some MP4 patents.
 %patch1 -p1 -b .cover
 %patch2 -p1 -b .mpeg4ip
 %patch3 -p1 -b .mountpoint
+%patch4 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
 
 %build
@@ -81,9 +82,6 @@ chmod 644 README ChangeLog COPYING AUTHORS
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall_std
-desktop-file-install --vendor="" \
-	--add-category="X-MandrivaLinux-Multimedia-Sound" \
-	--dir $RPM_BUILD_ROOT%{_datadir}/applications $RPM_BUILD_ROOT%{_datadir}/applications/*
 
 %find_lang %{name}
 
