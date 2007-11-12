@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.10
-%define release %mkrel 4
+%define release %mkrel 5
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
