@@ -27,7 +27,6 @@ Patch4: gtkpod-0.99.10-desktopentry.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPL
 Group:		Communications
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
 BuildRequires:	libgpod-devel >= 0.5.2
 BuildRequires:	libvorbis-devel
