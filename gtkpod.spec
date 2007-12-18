@@ -1,6 +1,6 @@
 %define name	gtkpod
-%define version 0.99.10
-%define release %mkrel 5
+%define version 0.99.12
+%define release %mkrel 1
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -15,20 +15,16 @@ Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.bz2
-Patch: gtkpod-0.99.10-evo.patch
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.gz
 Patch1: gtkpod-0.99.8-cover.patch
-#gw fix build with mpeg4ip 1.6
-Patch2: gtkpod-0.99.10-mpeg4ip.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
-Patch4: gtkpod-0.99.10-desktopentry.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPL
 Group:		Communications
 BuildRequires:	libid3tag-devel
-BuildRequires:	libgpod-devel >= 0.5.2
+BuildRequires:	libgpod-devel >= 0.6.0
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	gtk2-devel libglade2.0-devel
@@ -67,11 +63,8 @@ This package is in PLF as it may violate some MP4 patents.
 
 %prep
 %setup -q
-%patch0 -p1 -b .evo
 %patch1 -p1 -b .cover
-%patch2 -p1 -b .mpeg4ip
 %patch3 -p1 -b .mountpoint
-%patch4 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
 
 %build
