@@ -23,6 +23,7 @@ Patch3: gtkpod-mountpoint.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPL
 Group:		Communications
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
 BuildRequires:	libgpod-devel >= 0.6.0
 BuildRequires:	libvorbis-devel
