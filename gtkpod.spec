@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.12
-%define release %mkrel 1
+%define release %mkrel 2
 
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -37,6 +37,7 @@ BuildRequires:	flex
 %if %build_plf
 BuildRequires:	libmp4v2-devel
 %endif
+BuildRequires:  desktop-file-utils
 
 %description
 gtkpod is a platform independent GUI for Apple's iPod using GTK2. It allows
@@ -82,16 +83,24 @@ rm -rf $RPM_BUILD_ROOT
 perl -pi -e "s!%_prefix/lib!%_libdir!g" %buildroot%_datadir/%name/scripts/sync-evolution.sh
 %endif
 
+desktop-file-install --vendor="" \
+  --add-mime-type="x-content/audio-player" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications $RPM_BUILD_ROOT%{_datadir}/applications/*
+
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_menus
 %update_icon_cache hicolor
+%update_desktop_database
 		
 %postun
 %clean_menus
 %clean_icon_cache hicolor
+%clean_desktop_database
 
 %files -f %{name}.lang
 %defattr(-,root,root)
