@@ -1,14 +1,6 @@
 %define name	gtkpod
 %define version 0.99.12
-%define release %mkrel 2
-
-%define build_plf 0
-%{?_with_plf: %{expand: %%global build_plf 1}}
-%if %build_plf
-%define distsuffix plf
-%endif
-#fixed2
-%{?!mkrel:%define mkrel(c:) %{-c: 0.%{-c*}.}%{!?_with_unstable:%(perl -e '$_="%{1}";m/(.\*\\D\+)?(\\d+)$/;$rel=${2}-1;re;print "$1$rel";').%{?subrel:%subrel}%{!?subrel:1}.%{?distversion:%distversion}%{?!distversion:%(echo $[%{mdkversion}/10])}}%{?_with_unstable:%{1}}%{?distsuffix:%distsuffix}%{?!distsuffix:mdk}}
+%define release %mkrel 3
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -34,9 +26,7 @@ BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	libgnomecanvas2-devel
 BuildRequires:	flex
-%if %build_plf
 BuildRequires:	libmp4v2-devel
-%endif
 BuildRequires:  desktop-file-utils
 
 %description
@@ -58,10 +48,6 @@ gtkpod allows you to
     * Write the updated iTunesDB and added songs to your iPod.
     * Work offline and synchronize your new playlists / songs with the iPod
       at a later time.
-
-%if %build_plf
-This package is in PLF as it may violate some MP4 patents.
-%endif
 
 %prep
 %setup -q
