@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.12
-%define release %mkrel 3
+%define release %mkrel 4
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
