@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.12
-%define release %mkrel 4
+%define release %mkrel 5
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -8,12 +8,14 @@ Version: 	%{version}
 Release: 	%{release}
 
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.gz
+Patch:  gtkpod-0.99.12-format-strings.patch
 Patch1: gtkpod-0.99.8-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
+Patch4:  gtkpod-0.99.12-new-libmp4v2.patch
 URL:		http://gtkpod.sourceforge.net/
-License:	GPL
+License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
@@ -51,9 +53,12 @@ gtkpod allows you to
 
 %prep
 %setup -q
+%patch -p1
 %patch1 -p1 -b .cover
 %patch3 -p1 -b .mountpoint
+%patch4 -p1 -b .new-libmp4v2
 chmod 644 README ChangeLog COPYING AUTHORS
+autoreconf
 
 %build
 %configure2_5x
