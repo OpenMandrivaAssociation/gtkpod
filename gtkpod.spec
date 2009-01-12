@@ -29,6 +29,7 @@ BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	libgnomecanvas2-devel
 BuildRequires:	flex
 BuildRequires:	libmp4v2-devel
+BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 
 %description
