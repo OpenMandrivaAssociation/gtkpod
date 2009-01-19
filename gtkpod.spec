@@ -1,6 +1,6 @@
 %define name	gtkpod
-%define version 0.99.12
-%define release %mkrel 5
+%define version 0.99.14
+%define release %mkrel 1
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -8,18 +8,17 @@ Version: 	%{version}
 Release: 	%{release}
 
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.gz
-Patch:  gtkpod-0.99.12-format-strings.patch
-Patch1: gtkpod-0.99.8-cover.patch
+Patch:	gtkpod-r2203-format-strings.patch
+Patch1: gtkpod-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
-Patch4:  gtkpod-0.99.12-new-libmp4v2.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
-BuildRequires:	libgpod-devel >= 0.6.0
+BuildRequires:	libgpod-devel >= 0.7.0
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	gtk2-devel libglade2.0-devel
@@ -54,12 +53,10 @@ gtkpod allows you to
 
 %prep
 %setup -q
-%patch -p1
+%patch -p0
 %patch1 -p1 -b .cover
 %patch3 -p1 -b .mountpoint
-%patch4 -p1 -b .new-libmp4v2
 chmod 644 README ChangeLog COPYING AUTHORS
-autoreconf
 
 %build
 %configure2_5x
@@ -105,4 +102,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 %{_datadir}/applications/gtkpod.desktop
 %_datadir/icons/hicolor/*/apps/gtkpod.*
-
+%_mandir/man1/gtkpod.1*
