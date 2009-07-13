@@ -1,19 +1,21 @@
 %define name	gtkpod
-%define version 0.99.14
-%define release %mkrel 2
+%define version 0.99.15
+%define svn r2371
+%define release %mkrel 0.%svn.1
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{svn}.tar.bz2
 Patch:	gtkpod-r2203-format-strings.patch
 Patch1: gtkpod-cover.patch
+#gw fix libmp4v2 major
+Patch2: gtkpod-mp4v2-1.9.0.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
-Patch4:		gtkpod-0.99.14-mp4v2-1.9.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -31,6 +33,7 @@ BuildRequires:	flex
 BuildRequires:	libmp4v2-devel
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
+Suggests: %mklibname mp4v2_ 1
 
 %description
 gtkpod is a platform independent GUI for Apple's iPod using GTK2. It allows
@@ -53,12 +56,13 @@ gtkpod allows you to
       at a later time.
 
 %prep
-%setup -q
+%setup -q -n %name
 %patch -p0
 %patch1 -p1 -b .cover
+%patch2 -p0
 %patch3 -p1 -b .mountpoint
-%patch4 -p0 -b .mp4v2
 chmod 644 README ChangeLog COPYING AUTHORS
+./autogen.sh
 
 %build
 %configure2_5x
