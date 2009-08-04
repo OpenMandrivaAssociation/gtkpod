@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.15
-%define svn r2371
+%define svn r2378
 %define release %mkrel 0.%svn.1
 
 Name: 	 	%{name}
@@ -30,7 +30,6 @@ BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	libgnomecanvas2-devel
 BuildRequires:	flex
-BuildRequires:	libmp4v2-devel
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 Suggests: %mklibname mp4v2_ 1
@@ -59,7 +58,7 @@ gtkpod allows you to
 %setup -q -n %name
 %patch -p0
 %patch1 -p1 -b .cover
-%patch2 -p0
+%patch2 -p0 -b .mp4v2
 %patch3 -p1 -b .mountpoint
 chmod 644 README ChangeLog COPYING AUTHORS
 ./autogen.sh
