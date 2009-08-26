@@ -1,6 +1,6 @@
 %define name	gtkpod
 %define version 0.99.15
-%define svn r2378
+%define svn r2382
 %define release %mkrel 0.%svn.1
 
 Name: 	 	%{name}
@@ -16,6 +16,7 @@ Patch2: gtkpod-mp4v2-1.9.0.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
+Patch4: gtkpod-tomboy-notes-path.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -60,6 +61,7 @@ gtkpod allows you to
 %patch1 -p1 -b .cover
 %patch2 -p0 -b .mp4v2
 %patch3 -p1 -b .mountpoint
+%patch4 -p0
 chmod 644 README ChangeLog COPYING AUTHORS
 ./autogen.sh
 
