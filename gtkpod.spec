@@ -1,7 +1,7 @@
 %define name	gtkpod
 %define version 0.99.15
 %define svn r2382
-%define release %mkrel 0.%svn.1
+%define release %mkrel 0.%svn.2
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
