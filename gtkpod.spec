@@ -1,14 +1,14 @@
 %define name	gtkpod
 %define version 0.99.15
-%define svn r2382
-%define release %mkrel 0.%svn.2
+%define git 20091124
+%define release %mkrel 0.%git.1
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{svn}.tar.bz2
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{git}.tar.xz
 Patch:	gtkpod-r2203-format-strings.patch
 Patch1: gtkpod-cover.patch
 #gw fix libmp4v2 major
@@ -17,6 +17,7 @@ Patch2: gtkpod-mp4v2-1.9.0.patch
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
 Patch4: gtkpod-tomboy-notes-path.patch
+Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -29,7 +30,6 @@ BuildRequires:	gtk2-devel libglade2.0-devel
 BuildRequires:	libcurl-devel
 BuildRequires:	libhal-devel
 BuildRequires:	libgnome-vfs2-devel
-BuildRequires:	libgnomecanvas2-devel
 BuildRequires:	flex
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
@@ -62,6 +62,7 @@ gtkpod allows you to
 %patch2 -p0 -b .mp4v2
 %patch3 -p1 -b .mountpoint
 %patch4 -p0
+%patch5 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
 ./autogen.sh
 
