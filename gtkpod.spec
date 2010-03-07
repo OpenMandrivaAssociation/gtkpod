@@ -1,18 +1,15 @@
 %define name	gtkpod
-%define version 0.99.15
-%define git 20091124
-%define release %mkrel 0.%git.1
+%define version 0.99.16
+%define prerel rc1
+%define release %mkrel -c %prerel 1
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%{git}.tar.xz
-Patch:	gtkpod-r2203-format-strings.patch
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version-%{prerel}.tar.gz
 Patch1: gtkpod-cover.patch
-#gw fix libmp4v2 major
-Patch2: gtkpod-mp4v2-1.9.0.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
 Patch3: gtkpod-mountpoint.patch
@@ -26,10 +23,9 @@ BuildRequires:	libid3tag-devel
 BuildRequires:	libgpod-devel >= 0.7.0
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
+BuildRequires:	glib2-devel >= 2.15
 BuildRequires:	gtk2-devel libglade2.0-devel
 BuildRequires:	libcurl-devel
-BuildRequires:	libhal-devel
-BuildRequires:	libgnome-vfs2-devel
 BuildRequires:	flex
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
@@ -56,15 +52,12 @@ gtkpod allows you to
       at a later time.
 
 %prep
-%setup -q -n %name
-%patch -p0
+%setup -q -n %name-%version
 %patch1 -p1 -b .cover
-%patch2 -p0 -b .mp4v2
 %patch3 -p1 -b .mountpoint
 %patch4 -p0
 %patch5 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
-./autogen.sh
 
 %build
 %configure2_5x
