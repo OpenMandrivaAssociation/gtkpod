@@ -1,14 +1,13 @@
 %define name	gtkpod
 %define version 0.99.16
-%define prerel rc1
-%define release %mkrel -c %prerel 1
+%define release %mkrel 1
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version-%{prerel}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
 Patch1: gtkpod-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
