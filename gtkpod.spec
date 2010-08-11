@@ -1,13 +1,21 @@
 %define name	gtkpod
-%define version 0.99.16
+%define version 1.0.0
+%define git 0
+%if %git
+%define release %mkrel -c %git 1
+%else
 %define release %mkrel 1
+%endif
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
-
+%if %git
+Source0:       %{name}-%{git}.tar.xz
+%else
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
+%endif
 Patch1: gtkpod-cover.patch
 #gw change default mount point in the sync scripts. This isn't strictly
 #nessessary as all scripts support a command line option -i mountpoint
@@ -19,6 +27,7 @@ License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
+BuildRequires:	libmp4v2-devel
 BuildRequires:	libgpod-devel >= 0.7.0
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
@@ -51,7 +60,12 @@ gtkpod allows you to
       at a later time.
 
 %prep
+%if %git
+%setup -q -n %name
+./autogen.sh -V
+%else
 %setup -q -n %name-%version
+%endif
 %patch1 -p1 -b .cover
 %patch3 -p1 -b .mountpoint
 %patch4 -p0
