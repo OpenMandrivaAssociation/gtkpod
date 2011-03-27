@@ -1,11 +1,15 @@
 %define name	gtkpod
-%define version 1.0.0
+%define version 2.0.0
 %define git 0
 %if %git
-%define release %mkrel -c %git 1
+%define release 1
 %else
 %define release %mkrel 1
 %endif
+
+%define major 1
+%define libname %mklibname %name %major
+%define develname %mklibname -d %name
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -17,11 +21,9 @@ Source0:       %{name}-%{git}.tar.xz
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
 %endif
 Patch1: gtkpod-cover.patch
-#gw change default mount point in the sync scripts. This isn't strictly
-#nessessary as all scripts support a command line option -i mountpoint
-Patch3: gtkpod-mountpoint.patch
 Patch4: gtkpod-tomboy-notes-path.patch
 Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
+Patch6: gtkpod-2.0.0-format-strings.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -33,7 +35,11 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	glib2-devel >= 2.15
 BuildRequires:	gtk2-devel libglade2.0-devel
+BuildRequires:	libanjuta-devel
+BuildRequires:	libgdl-devel
 BuildRequires:	libcurl-devel
+BuildRequires:	webkitgtk-devel
+BuildRequires:	libgstreamer-plugins-base-devel
 BuildRequires:	flex
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
@@ -59,6 +65,22 @@ gtkpod allows you to
     * Work offline and synchronize your new playlists / songs with the iPod
       at a later time.
 
+%package -n %libname
+Group: System/Libraries
+Summary: Shared library part of %nama
+
+%description -n %libname
+This is the shared library part of %{name}.
+
+%package -n %develname
+Group: Development/C
+Summary: Development files for %name
+Provides: %name-devel = %version-%release
+Requires: %libname = %version-%release
+
+%description -n %develname
+This is the development part of %{name}.
+
 %prep
 %if %git
 %setup -q -n %name
@@ -67,13 +89,13 @@ gtkpod allows you to
 %setup -q -n %name-%version
 %endif
 %patch1 -p1 -b .cover
-%patch3 -p1 -b .mountpoint
 %patch4 -p0
 %patch5 -p1
+%patch6 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
 
 %build
-%configure2_5x
+%configure2_5x --disable-static
 %make
 										
 %install
@@ -117,3 +139,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/gtkpod.desktop
 %_datadir/icons/hicolor/*/apps/gtkpod.*
 %_mandir/man1/gtkpod.1*
+%_libdir/%name
+
+%files -n %libname
+%defattr(-,root,root)
+%_libdir/libgtkpod.so.%{major}*
+
+%files -n %develname
+%defattr(-,root,root)
+%_libdir/libgtkpod.so
+%_libdir/libgtkpod.la
+%_libdir/pkgconfig/libgtkpod-1.0.pc
+%_includedir/gtkpod
