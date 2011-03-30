@@ -35,7 +35,7 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	glib2-devel >= 2.15
 BuildRequires:	gtk2-devel libglade2.0-devel
-BuildRequires:	libanjuta-devel
+BuildRequires:	libanjuta-devel >= 2.30.0
 BuildRequires:	libgdl-devel
 BuildRequires:	libcurl-devel
 BuildRequires:	webkitgtk-devel
