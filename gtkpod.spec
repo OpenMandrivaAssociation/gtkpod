@@ -4,12 +4,20 @@
 %if %git
 %define release 1
 %else
-%define release %mkrel 1
+%define release %mkrel 2
 %endif
 
 %define major 1
 %define libname %mklibname %name %major
 %define develname %mklibname -d %name
+%define with_plf 0
+%if %with_plf
+%if %mdvver >= 201100
+# make EVR of plf build higher than regular to allow update, needed with rpm5 mkrel
+%define extrarelsuffix plf
+%endif
+%define distsuffix plf
+%endif
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -44,6 +52,9 @@ BuildRequires:	flex
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 Suggests: %mklibname mp4v2_ 1
+%if %with_plf
+BuildRequires: libfaad2-devel >= 2.0
+%endif
 
 %description
 gtkpod is a platform independent GUI for Apple's iPod using GTK2. It allows
@@ -64,6 +75,10 @@ gtkpod allows you to
     * Write the updated iTunesDB and added songs to your iPod.
     * Work offline and synchronize your new playlists / songs with the iPod
       at a later time.
+
+%if %with_plf
+This package is in PLF as it is violating software patents.
+%endif
 
 %package -n %libname
 Group: System/Libraries
