@@ -4,20 +4,12 @@
 %if %git
 %define release 1
 %else
-%define release %mkrel 2
+%define release %mkrel 3
 %endif
 
 %define major 1
 %define libname %mklibname %name %major
 %define develname %mklibname -d %name
-%define with_plf 0
-%if %with_plf
-%if %mdvver >= 201100
-# make EVR of plf build higher than regular to allow update, needed with rpm5 mkrel
-%define extrarelsuffix plf
-%endif
-%define distsuffix plf
-%endif
 
 Name: 	 	%{name}
 Summary: 	GTK interface to iPod
@@ -53,9 +45,7 @@ BuildRequires:	flex
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 Suggests: %mklibname mp4v2_ 1
-%if %with_plf
-BuildRequires: libfaad2-devel >= 2.0
-%endif
+Suggests: faad2
 
 %description
 gtkpod is a platform independent GUI for Apple's iPod using GTK2. It allows
@@ -76,10 +66,6 @@ gtkpod allows you to
     * Write the updated iTunesDB and added songs to your iPod.
     * Work offline and synchronize your new playlists / songs with the iPod
       at a later time.
-
-%if %with_plf
-This package is in PLF as it is violating software patents.
-%endif
 
 %package -n %libname
 Group: System/Libraries
@@ -114,6 +100,9 @@ chmod 644 README ChangeLog COPYING AUTHORS
 autoconf
 
 %build
+#gw we suggest it, this trick is to make the m4a plugin build
+ln -s /bin/true faad
+export PATH=.:$PATH
 %configure2_5x --disable-static
 %make
 										
@@ -153,6 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/%name/details_editor.plugin
 %_libdir/%name/exporter.plugin
 %_libdir/%name/filetype_flac.plugin
+%_libdir/%name/filetype_m4a.plugin
 %_libdir/%name/filetype_mp3.plugin
 %_libdir/%name/filetype_mp4.plugin
 %_libdir/%name/filetype_ogg.plugin
@@ -166,9 +156,6 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/%name/repository_editor.plugin
 %_libdir/%name/sorttab_display.plugin
 %_libdir/%name/track_display.plugin
-%if %with_plf
-%_libdir/%name/filetype_m4a.plugin
-%endif
 
 
 %files -n %libname
