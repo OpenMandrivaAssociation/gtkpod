@@ -28,6 +28,7 @@ Source0:       %{name}-%{git}.tar.xz
 %else
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
 %endif
+Patch0: gtkpod-2.0.0-gtk-deprecated.patch
 Patch1: gtkpod-cover.patch
 Patch4: gtkpod-tomboy-notes-path.patch
 Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
@@ -103,11 +104,14 @@ This is the development part of %{name}.
 %else
 %setup -q -n %name-%version
 %endif
+%patch0 -p1 -b .deprecated
 %patch1 -p1 -b .cover
 %patch4 -p0
 %patch5 -p1
 %patch6 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
+#patch0
+autoconf
 
 %build
 %configure2_5x --disable-static
@@ -132,20 +136,6 @@ desktop-file-install --vendor="" \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %mdkversion < 200900
-%post
-%update_menus
-%update_icon_cache hicolor
-%update_desktop_database
-%endif
-		
-%if %mdkversion < 200900
-%postun
-%clean_menus
-%clean_icon_cache hicolor
-%clean_desktop_database
-%endif
-
 %files -f %{name}.lang
 %defattr(-,root,root)
 %doc README AUTHORS ChangeLog
@@ -154,7 +144,32 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/gtkpod.desktop
 %_datadir/icons/hicolor/*/apps/gtkpod.*
 %_mandir/man1/gtkpod.1*
-%_libdir/%name
+%dir %_libdir/%name
+%_libdir/%name/*.la
+%_libdir/%name/*.so
+%_libdir/%name/core_prefs.plugin
+%_libdir/%name/cover_display.plugin
+%_libdir/%name/coverweb.plugin
+%_libdir/%name/details_editor.plugin
+%_libdir/%name/exporter.plugin
+%_libdir/%name/filetype_flac.plugin
+%_libdir/%name/filetype_mp3.plugin
+%_libdir/%name/filetype_mp4.plugin
+%_libdir/%name/filetype_ogg.plugin
+%_libdir/%name/filetype_wav.plugin
+%_libdir/%name/filetype_video.plugin
+%_libdir/%name/info_display.plugin
+%_libdir/%name/media_player.plugin
+%_libdir/%name/mserv.plugin
+%_libdir/%name/photo_editor.plugin
+%_libdir/%name/playlist_display.plugin
+%_libdir/%name/repository_editor.plugin
+%_libdir/%name/sorttab_display.plugin
+%_libdir/%name/track_display.plugin
+%if %with_plf
+%_libdir/%name/filetype_m4a.plugin
+%endif
+
 
 %files -n %libname
 %defattr(-,root,root)
