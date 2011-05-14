@@ -1,10 +1,10 @@
 %define name	gtkpod
-%define version 2.0.0
+%define version 2.0.1
 %define git 0
 %if %git
 %define release 1
 %else
-%define release %mkrel 3
+%define release %mkrel 1
 %endif
 
 %define major 1
@@ -24,7 +24,6 @@ Patch0: gtkpod-2.0.0-gtk-deprecated.patch
 Patch1: gtkpod-cover.patch
 Patch4: gtkpod-tomboy-notes-path.patch
 Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
-Patch6: gtkpod-2.0.0-format-strings.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -94,7 +93,6 @@ This is the development part of %{name}.
 %patch1 -p1 -b .cover
 %patch4 -p0
 %patch5 -p1
-%patch6 -p1
 chmod 644 README ChangeLog COPYING AUTHORS
 #patch0
 autoconf
@@ -104,7 +102,7 @@ autoconf
 ln -s /bin/true faad
 export PATH=.:$PATH
 %configure2_5x --disable-static
-%make
+%make LDFLAGS=%ldflags
 										
 %install
 rm -rf $RPM_BUILD_ROOT
