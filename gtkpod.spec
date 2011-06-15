@@ -4,7 +4,7 @@
 %if %git
 %define release %mkrel -c %git 1
 %else
-%define release %mkrel 1
+%define release %mkrel 2
 %endif
 
 %define major 1
@@ -20,10 +20,10 @@ Source0:       %{name}-%{git}.tar.xz
 %else
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
 %endif
-Patch0: gtkpod-2.0.0-gtk-deprecated.patch
 Patch1: gtkpod-cover.patch
 Patch4: gtkpod-tomboy-notes-path.patch
 Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
+Patch6: gtkpod-2.0.2-mp4v2-check.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
@@ -89,20 +89,20 @@ This is the development part of %{name}.
 %else
 %setup -q -n %name-%version
 %endif
-%patch0 -p1 -b .deprecated
 %patch1 -p1 -b .cover
 %patch4 -p0
 %patch5 -p1
+%patch6 -p0
 chmod 644 README ChangeLog COPYING AUTHORS
-#patch0
+#patch6
 autoconf
 
 %build
 #gw we suggest it, this trick is to make the m4a plugin build
-ln -s /bin/true faad
+ln -fs /bin/true faad
 export PATH=.:$PATH
 %configure2_5x --disable-static
-%make LDFLAGS=%ldflags
+%make
 										
 %install
 rm -rf $RPM_BUILD_ROOT
