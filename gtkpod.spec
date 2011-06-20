@@ -1,11 +1,6 @@
 %define name	gtkpod
 %define version 2.0.2
-%define git 0
-%if %git
-%define release %mkrel -c %git 2
-%else
-%define release %mkrel 2
-%endif
+%define release %mkrel 3
 
 %define major 1
 %define libname %mklibname %name %major
@@ -15,11 +10,7 @@ Name: 	 	%{name}
 Summary: 	GTK interface to iPod
 Version: 	%{version}
 Release: 	%{release}
-%if %git
-Source0:       %{name}-%{git}.tar.xz
-%else
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
-%endif
 Patch1: gtkpod-cover.patch
 Patch4: gtkpod-tomboy-notes-path.patch
 Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
@@ -83,12 +74,7 @@ Requires: %libname = %version-%release
 This is the development part of %{name}.
 
 %prep
-%if %git
-%setup -q -n %name
-./autogen.sh -V
-%else
 %setup -q -n %name-%version
-%endif
 %patch1 -p1 -b .cover
 %patch4 -p0
 %patch5 -p1
