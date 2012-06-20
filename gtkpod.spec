@@ -1,41 +1,47 @@
-%define name	gtkpod
-%define version 2.0.2
-%define release %mkrel 3
+%define build_plf	0
 
-%define major 1
-%define libname %mklibname %name %major
-%define develname %mklibname -d %name
+%if "%{?distro_section}" == "tainted"
+%define build_plf	1
+%endif
 
-Name: 	 	%{name}
-Summary: 	GTK interface to iPod
-Version: 	%{version}
-Release: 	%{release}
+%define major     1
+%define libname   %mklibname %{name} %{major}
+%define libnameatomic   %mklibname atomicparsley %{major}
+%define develname %mklibname %{name} -d
+%define develnameatomic %mklibname atomicparsley -d
+
+Name:		gtkpod
+Summary:	GTK interface to iPod
+Version:	2.1.2
+Release:	1
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
-Patch1: gtkpod-cover.patch
-Patch4: gtkpod-tomboy-notes-path.patch
-Patch5: gtkpod-fix-quoting-in-sync-scripts.patch
-Patch6: gtkpod-2.0.2-mp4v2-check.patch
+Patch2:		gtkpod-2.1.0-pref.patch
 URL:		http://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	libid3tag-devel
 BuildRequires:	libmp4v2-devel
 BuildRequires:	libgpod-devel >= 0.7.0
 BuildRequires:	libvorbis-devel
 BuildRequires:	libflac-devel
 BuildRequires:	glib2-devel >= 2.15
-BuildRequires:	gtk2-devel libglade2.0-devel
-BuildRequires:	libanjuta-devel >= 2.30.0
-BuildRequires:	libgdl-devel
+BuildRequires:	gtk+3-devel
 BuildRequires:	libcurl-devel
-BuildRequires:	webkitgtk-devel
-BuildRequires:	libgstreamer-plugins-base-devel
 BuildRequires:	flex
-BuildRequires:  intltool
-BuildRequires:  desktop-file-utils
-Suggests: %mklibname mp4v2_ 1
-Suggests: faad2
+BuildRequires:	intltool
+BuildRequires:	gettext-devel
+BuildRequires:	desktop-file-utils
+BuildRequires:	anjuta-devel
+BuildRequires:	gdl-devel
+BuildRequires:	webkitgtk3-devel
+BuildRequires:	gstreamer0.10-devel
+
+%if %{build_plf}
+BuildRequires:	libfaad2-devel
+Requires:	faad2
+%endif
+
+Suggests:	%mklibname mp4v2_ 1
 
 %description
 gtkpod is a platform independent GUI for Apple's iPod using GTK2. It allows
@@ -56,99 +62,94 @@ gtkpod allows you to
     * Write the updated iTunesDB and added songs to your iPod.
     * Work offline and synchronize your new playlists / songs with the iPod
       at a later time.
+%if %{build_plf}
+This package is in "Tainted" as it requires package from "Tainted".
+%endif
 
-%package -n %libname
-Group: System/Libraries
-Summary: Shared library part of %nama
+%package -n %{libname}
+Summary:	Library package for %{name}
+Group:		Communications
 
-%description -n %libname
-This is the shared library part of %{name}.
+%description -n %{libname}
+Library package for %{name}.
 
-%package -n %develname
-Group: Development/C
-Summary: Development files for %name
-Provides: %name-devel = %version-%release
-Requires: %libname = %version-%release
 
-%description -n %develname
-This is the development part of %{name}.
+%package -n %{libnameatomic}
+Summary:	Library package for %{name}
+Group:		Communications
+
+%description -n %{libnameatomic}
+Library package for %{name}.
+
+
+%package -n %{develnameatomic}
+Summary:	Development files for %{name}
+Group:		Communications
+Provides:	gtkpod-atomic-devel
+Requires:	%{libname} = %{version}-%{release}
+
+%description -n %{develnameatomic}
+Development files for %{name}, you need this package if you want to compile
+applications against %{name}.
+
+%package -n %{develname}
+Summary:	Development files for %{name}
+Group:		Communications
+Requires:	%{libname} = %{version}-%{release}
+
+%description -n %{develname}
+Development files for %{name}, you need this package if you want to compile
+applications against %{name}.
 
 %prep
-%setup -q -n %name-%version
-%patch1 -p1 -b .cover
-%patch4 -p0
-%patch5 -p1
-%patch6 -p0
-chmod 644 README ChangeLog COPYING AUTHORS
-#patch6
-autoconf
+%setup -q
+%patch2 -p1 -b .pref
+sed -i -e '/^dist_profiles_DATA/s:=.*:=:' plugins/sjcd/data/Makefile.in || die
 
 %build
-#gw we suggest it, this trick is to make the m4a plugin build
-ln -fs /bin/true faad
-export PATH=.:$PATH
-%configure2_5x --disable-static
-%make
-										
+autoreconf -vfi
+export GST_INSPECT=true
+%configure2_5x \
+%if !%{build_plf}
+	--without-faad \
+%endif
+	--disable-static
+%make LIBS="$LIBS -lm"
+
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 %makeinstall_std
 
 %find_lang %{name}
 
-%if %_lib != lib
-perl -pi -e "s!%_prefix/lib!%_libdir!g" %buildroot%_datadir/%name/scripts/sync-evolution.sh
-%endif
-
 desktop-file-install --vendor="" \
   --add-mime-type="x-content/audio-player" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications $RPM_BUILD_ROOT%{_datadir}/applications/*
+  --dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
 
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+# don't ship .la
+find %{buildroot} -name '*.la' | xargs rm -f
 
 %files -f %{name}.lang
-%defattr(-,root,root)
 %doc README AUTHORS ChangeLog
+%{_datadir}/glib-2.0/schemas/*.xml
 %{_bindir}/%{name}
+%{_libdir}/%{name}/*.plugin
+%{_libdir}/%{name}/*.so
 %{_datadir}/%{name}
 %{_datadir}/applications/gtkpod.desktop
-%_datadir/icons/hicolor/*/apps/gtkpod.*
-%_mandir/man1/gtkpod.1*
-%dir %_libdir/%name
-%_libdir/%name/*.la
-%_libdir/%name/*.so
-%_libdir/%name/core_prefs.plugin
-%_libdir/%name/cover_display.plugin
-%_libdir/%name/coverweb.plugin
-%_libdir/%name/details_editor.plugin
-%_libdir/%name/exporter.plugin
-%_libdir/%name/filetype_flac.plugin
-%_libdir/%name/filetype_m4a.plugin
-%_libdir/%name/filetype_mp3.plugin
-%_libdir/%name/filetype_mp4.plugin
-%_libdir/%name/filetype_ogg.plugin
-%_libdir/%name/filetype_wav.plugin
-%_libdir/%name/filetype_video.plugin
-%_libdir/%name/info_display.plugin
-%_libdir/%name/media_player.plugin
-%_libdir/%name/mserv.plugin
-%_libdir/%name/photo_editor.plugin
-%_libdir/%name/playlist_display.plugin
-%_libdir/%name/repository_editor.plugin
-%_libdir/%name/sorttab_display.plugin
-%_libdir/%name/track_display.plugin
+%{_datadir}/icons/hicolor/*/apps/gtkpod.*
+%{_mandir}/man1/gtkpod.1*
 
+%files -n %{libname}
+%{_libdir}/libgtkpod.so.%{major}*
 
-%files -n %libname
-%defattr(-,root,root)
-%_libdir/libgtkpod.so.%{major}*
+%files -n %{libnameatomic}
+%{_libdir}/libatomicparsley.so.0*
 
-%files -n %develname
-%defattr(-,root,root)
-%_libdir/libgtkpod.so
-%_libdir/libgtkpod.la
-%_libdir/pkgconfig/libgtkpod-1.0.pc
-%_includedir/gtkpod
+%files -n %{develname}
+%{_includedir}/gtkpod/
+%{_libdir}/libgtkpod.so
+%{_libdir}/pkgconfig/*.pc
+
+%files -n %{develnameatomic}
+%{_libdir}/libatomicparsley.so
