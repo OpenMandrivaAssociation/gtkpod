@@ -16,7 +16,7 @@ Version:	2.1.2
 Release:	1
 Source0:	http://prdownloads.sourceforge.net/gtkpod/%{name}-%version.tar.gz
 Patch2:		gtkpod-2.1.0-pref.patch
-URL:		http://gtkpod.sourceforge.net/
+URL:		https://gtkpod.sourceforge.net/
 License:	GPLv2+
 Group:		Communications
 BuildRequires:	libid3tag-devel
